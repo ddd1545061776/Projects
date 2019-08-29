@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddd.dao.UserMapper">
+
+<select id="findUserBynamepwd" parameterType="com.ddd.pojo.User" resultType="com.ddd.pojo.User">
+   select * from db_student  where username=#{username} and password=#{password}
+</select>
+
+</mapper>

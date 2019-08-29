@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	 xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+       
+        <!--加载配置文佳  -->
+       <context:component-scan base-package="com.ddd.dao,com.ddd.service"/>
+   
+          
+        <context:property-placeholder location="classpath:db.properties"/>
+        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"> 
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+        </bean>
+        <bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--加载mybatis的配置文件  -->
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"/>
+       
+        <!--加载数据源  -->
+        <property name="dataSource" ref="dataSource"/>
+        </bean>
+        <!--原始dao接口  -->
+        <!--  <bean id="user" class="com.ddd.ssm.dao.UserDaoimpl">
+         <property name="SqlSessionFactory" ref="SqlSessionFactory"/>
+         </bean> -->
+         <!--MapperFactoryBean:根据mapper接口生成代理对象  -->
+        <!--  <bean id="usermapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+         mapperInterface指定mapper接口  
+         <property name="mapperInterface" value="com.ddd.ssm.mapper.UserMapper"/>
+         <property name="SqlSessionFactory" ref="SqlSessionFactory"/>
+         </bean> -->
+         <!--mapper批量扫描  -->
+         <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+         <!-- 指定扫描的包名 -->
+         <property name="basePackage" value="com.ddd.dao"/>
+         <property name="sqlSessionFactoryBeanName" value="SqlSessionFactory"/>
+         </bean>
+      <!--     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean> -->
+
+    <!-- 使用注解来控制事务 -->
+     <!--  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager">
+    </tx:annotation-driven>
+ -->
+
+        </beans>
