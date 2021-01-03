@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+                <div class="w3-header-top-grids">
+						<div style="color: white;display: inline-block" ><span id="nameddd"></span></div>
+						<div class="w3-header-top-left">
+							<p>欢迎来到小冬订餐平台!</p>
+						</div>
+						<div class="w3-header-top-right">
+							<div class="agileinfo-social-grids">
+								<ul>
+									<li><a  href="login.html">食客登录</a></li>
+									<li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
+									<li><a href="shopLogin.html">老板登录</a></li>
+								</ul>
+							</div>
+
+							<div class="clearfix"> </div>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script>
+   $(function() {
+       $.post("/Food/GetEmail",{},function(data) {
+           if (data!="") {
+       $("#nameddd").html("欢迎"+data+"用户"+"<a href='/Food/login_out'>"+"退出登录"+"</a>");
+
+           }else{
+                 $("#nameddd").html('');
+           }
+       });
+   });
+   $
+</script>
+</body>
+</html>
