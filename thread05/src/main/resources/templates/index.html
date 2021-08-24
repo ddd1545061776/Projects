@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+     	<head>
+     		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                 <meta name="description" content="">
+                 <meta name="author" content="">
+		<title>Process</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/index.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	</head>
+	<body style="text-align: center">
+		<div class="xiaodong">
+		<div class="box1"></div>未用率&nbsp;&nbsp;&nbsp;
+        			<div class="box2"></div>已用率
+			<div id="ddww" class="progress"></div>
+			</div>
+		<div class="container-fluid">
+					<div class="process">
+						<div class="left_box  col-lg-1">
+								<div class="list-group table_pro" role="group">
+									<a href="#" class="list-group-item list-group-item-warning" data-toggle="modal" data-whatever="创建进程数" data-target="#screat_prolice">创建进程数</a>
+									<a href="#" class="list-group-item list-group-item-warning" data-toggle="modal" data-whatever="释放内存" data-target="#srelease_prolice">释放内存</a>
+								  <a id="priority" href="#" class="list-group-item list-group-item-success">优先级调度算法</a>
+								 						  <a onclick="fCFS()" id="fCFS" href="#" class="list-group-item list-group-item-success">先来先服务算法</a>
+								  <a id="RR" href="#" class="list-group-item list-group-item-success" data-toggle="modal" data-whatever="时间片轮转" data-target="#slice">时间片轮转</a>
+								  <a id="hRRN" href="#" class="list-group-item list-group-item-success">高响应比优先</a>
+								  <a id="MSFQS" href="#" class="list-group-item list-group-item-success" data-toggle="modal" data-whatever="多级反馈" data-target="#msfqs">多级反馈调度算法</a>
+									<a href="" class="list-group-item list-group-item-warning" data-toggle="modal" data-whatever="添加新进程" data-target="#creat">新增进程</a>
+									   <a onclick="blockd()" href="#" class="list-group-item list-group-item-warning">阻塞</a>
+                                      <a onclick="wake()" href="#" class="list-group-item list-group-item-warning">唤醒</a>
+                                     <a onclick="clean()" href="#" class="list-group-item list-group-item-warning">清除队列</a>
+								</div>
+						</div>
+						<div class="center col-lg-13">
+							<table  style="width: 900px" id="readyBox" class="table table-bordered">
+								<caption><h4>就绪队列</h4></caption>
+								<tr>
+									<td class="success">进程ID</td>
+									<td class="success">进程名</td>
+									<td class="success">进程优先级</td>
+									<td class="success">进程所需时间</td>
+									<td class="success">进程到达时间</td>
+									<td class="success">进程已用CPU时间</td>
+									<td class="success">进程状态</td>
+									<td class="success">响应比</td>
+                                	<td class="success">起始址</td>
+                                	<td class="success">内存大小</td>
+                                	<td class="success">操作</td>
+								</tr>
+							</table>
+								<table id="noAllocation" class="table table-bordered">
+                                <caption><h4>未分配队列</h4></caption>
+                                <tr>
+                                    <td class="success">进程ID</td>
+                                    <td class="success">进程名</td>
+                                    <td class="success">进程优先级</td>
+                                    <td class="success">进程所需时间</td>
+                                    <td class="success">进程到达时间</td>
+                                    <td class="success">进程已用CPU时间</td>
+                                    <td class="success">进程状态</td>
+                                    <td class="success">响应比</td>
+                                    <td class="success">起始址</td>
+                                    <td class="success">内存大小</td>
+                                </tr>
+                            </table>
+							<table id="cpuBox" class="table table-bordered">
+								<caption><h4>运行队列</h4></caption>
+								<tr>
+									<td class="success">进程ID</td>
+									<td class="success">进程名</td>
+									<td class="success">进程优先级</td>
+									<td class="success">进程所需时间</td>
+									<td class="success">进程到达时间</td>
+									<td class="success">进程已用CPU时间</td>
+									<td class="success">进程状态</td>
+									<td class="success">响应比</td>
+									<td class="success">起始址</td>
+									<td class="success">内存大小</td>
+								</tr>
+							</table>
+							<table  id="blockBox" class="table table-bordered">
+								<caption><h4>阻塞队列</h4></caption>
+								<tr>
+									<td class="success">进程ID</td>
+									<td class="success">进程名</td>
+									<td class="success">进程优先级</td>
+									<td class="success">进程所需时间</td>
+									<td class="success">进程到达时间</td>
+									<td class="success">进程已用CPU时间</td>
+									<td class="success">进程状态</td>
+									<td class="success">响应比</td>
+									<td class="success">起始址</td>
+									<td class="success">内存大小</td>
+								</tr>
+							</table>
+							<table id="processSum"  class="table table-bordered">
+								<caption><h4>完成队列</h4></caption>
+								<tr>
+									<td class="success">进程ID</td>
+									<td class="success">进程名</td>
+									<td class="success">进程优先级</td>
+									<td class="success">进程所需时间</td>
+									<td class="success">进程到达时间</td>
+									<td class="success">进程已用CPU时间</td>
+									<td class="success">进程状态</td>
+									<td class="success">响应比</td>
+									<td class="success">起始址</td>
+									<td class="success">内存大小</td>
+								</tr>
+							</table>
+							<table id="firstQueue" class="table table-bordered">
+                            <caption><h4>队列一</h4></caption>
+                            <tr>
+                                <td class="success">进程ID</td>
+                                <td class="success">进程名</td>
+                                <td class="success">进程优先级</td>
+                                <td class="success">进程所需时间</td>
+                                <td class="success">进程到达时间</td>
+                                <td class="success">进程已用CPU时间</td>
+                                <td class="success">进程状态</td>
+                                <td class="success">响应比</td>
+                                <td class="success">起始址</td>
+                                <td class="success">内存大小</td>
+                            </tr>
+                        </table>
+                        <table id="secondQueue" class="table table-bordered">
+                            <caption><h4>队列二</h4></caption>
+                            <tr>
+                                <td class="success">进程ID</td>
+                                <td class="success">进程名</td>
+                                <td class="success">进程优先级</td>
+                                <td class="success">进程所需时间</td>
+                                <td class="success">进程到达时间</td>
+                                <td class="success">进程已用CPU时间</td>
+                                <td class="success">进程状态</td>
+                                <td class="success">响应比</td>
+                                <td class="success">起始址</td>
+                                <td class="success">内存大小</td>
+                            </tr>
+                        </table>
+                         <table id="thirdQueue" class="table table-bordered">
+                            <caption><h4>队列三</h4></caption>
+                            <tr>
+                                <td class="success">进程ID</td>
+                                <td class="success">进程名</td>
+                                <td class="success">进程优先级</td>
+                                <td class="success">进程所需时间</td>
+                                <td class="success">进程到达时间</td>
+                                <td class="success">进程已用CPU时间</td>
+                                <td class="success">进程状态</td>
+                                <td class="success">响应比</td>
+                                <td class="success">起始址</td>
+                                <td class="success">内存大小</td>
+                            </tr>
+                        </table>
+						</div>
+						<div class="cter col-lg-3">
+
+							<table id="ddd" class="table table-bordered">
+								<caption><h4>内存分配表</h4></caption>
+								<tr>
+								    <td class="success">进程名</td>
+									<td class="success">大小KB</td>
+									<td class="success">起始地址KB</td>
+									<td class="success">状态</td>
+								</tr>
+							</table>
+							<table id="dddd" class="table table-bordered">
+								<caption><h4>空闲分配表</h4></caption>
+								<tr>
+									<td class="success">大小KB</td>
+									<td class="success">起始地址KB</td>
+									<td class="success">状态</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="modal fade bs-example-modal-sm model_slice" id="screat_prolice" tabindex="-1" role="dialog" aria-labelledby="sliceLabel">
+				    <div class="modal-dialog modal-sm" role="document">
+				        <div class="modal-content">
+				            <div class="modal-body">
+				                <form>
+				                    <div class="form-group">
+				                        <label for="crea_pro" class="control-label">创建新进程：</label>
+				                       <input id="tnumber" type="type" class="form-control" placeholder="创建进程数">
+				                           <select id="select" class="form-control">
+                                    <option disabled="" selected="" value="">请选择内存分配算法</option>
+                                    <option  value="fristFit">首次适应算法</option>
+                                    <option value="bestFit">最佳适应算法</option>
+                                    <option value="worstFit">最坏适应算法</option>
+                                    <option value="nextFit">循环首次适应算法</option>
+                                 </select>
+				                    </div>
+				                    <div class="form-group">
+				                        <input id="submit" type="submit" class="btn btn-info form-control " value="提交">
+				                    </div>
+				                </form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+<div class="modal fade bs-example-modal-sm model_slice" id="srelease_prolice" tabindex="-1" role="dialog" aria-labelledby="sliceLabel">
+				    <div class="modal-dialog modal-sm" role="document">
+				        <div class="modal-content">
+				            <div class="modal-body">
+                                    <form>
+				                    <div class="form-group">
+				                        <label for="crea_pro" class="control-label">释放内存：</label>
+				                       <input id="tmname" type="type" class="form-control" placeholder="释放内存的名字">
+				                    </div>
+				                    <div class="form-group">
+				                        <input id="submit_release" type="submit" class="btn btn-info form-control " value="提交">
+				                    </div>
+                                 </form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+				<div class="modal fade bs-example-modal-sm model_slice" id="slice" tabindex="-1" role="dialog" aria-labelledby="sliceLabel">
+				    <div class="modal-dialog modal-sm" role="document">
+				        <div class="modal-content">
+				            <div class="modal-body">
+				                <form>
+				                    <div class="form-group">
+				                        <label for="slice_time" class="control-label">请输入时间片：</label>
+				                    <input  type="text" class="form-control" placeholder="请输入时间片" name="slice_time" id="slice_time">
+				                    </div>
+				                    <div class="form-group">
+				                         <input id="slice_submit" type="submit" class="btn btn-info form-control " value="提交">
+				                    </div>
+				                </form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+				<div class="modal fade bs-example-modal-sm model_msfqs" id="msfqs" tabindex="-1" role="dialog" aria-labelledby="msfqsLabel">
+					<div class="modal-dialog modal-sm" role="document">
+					        <div class="modal-content">
+					            <div class="modal-body">
+					                <form>
+					                    <div class="form-group">
+					                        <label for="slice_time01" class="control-label">请输入第一个时间片：</label>
+					                     <input type="text" class="form-control" placeholder="请输入第一个时间片" name="slice_time01" id="slice_time01">
+					                    </div>
+															 <div class="form-group">
+															     <label for="slice_time02" class="control-label">请输入第二个时间片：</label>
+															    <input type="text" class="form-control" placeholder="请输入第二个时间片" name="slice_time02" id="slice_time02">
+															 </div>
+															 <div class="form-group">
+															     <label for="slice_time03" class="control-label">请输入第三个时间片：</label>
+															         <input type="text" class="form-control" placeholder="请输入第三个时间片" name="slice_time03" id="slice_time03">
+															 </div>
+					                    <div class="form-group">
+					                        <input type="submit" class="btn btn-info form-control " value="提交">
+					                    </div>
+					                </form>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+				<div class="modal fade bs-example-modal-sm model_msfqs" id="creat" tabindex="-1" role="dialog" aria-labelledby="msfqsLabel">
+					<div class="modal-dialog modal-sm" role="document">
+					        <div class="modal-content">
+					            <div class="modal-body">
+					                <form>
+					                    <div class="form-group">
+					                        <label for="priority" class="control-label">进程优先级：</label>
+					                        	<input id="priorityVal" type="text" class="form-control" placeholder="进程优先级">
+					                    </div>
+															 <div class="form-group">
+															     <label for="needtime" class="control-label">进程需要时间：</label>
+															    <input id="needVal" type="type" class="form-control" placeholder="进程需要时间">
+															 </div>
+															 <div class="form-group">
+															     <label for="arrivetime" class="control-label">进程到达时间：</label>
+															    <input id="arriveVal" type="type" class="form-control" placeholder="进程到达时间">
+															 </div>
+															  <div class="form-group">
+                                                     <label for="arrivetime" class="control-label">进程内存大小：</label>
+                                                    <input id="pmemorysize" type="type" class="form-control" placeholder="进程内存大小">
+                                               <select id="select2" class="form-control">
+                                                    <option disabled="" selected="" value="">请选择内存分配算法</option>
+                                                    <option  value="fristFit">首次适应算法</option>
+                                                    <option value="bestFit">最佳适应算法</option>
+                                                    <option value="worstFit">最坏适应算法</option>
+                                                    <option value="nextFit">循环首次适应算法</option>
+                                                 </select>
+                                                </div>
+					                    <div class="form-group">
+					                    		<input id="newthread"  type="submit" class="btn btn-info form-control" value="提交">
+					                    </div>
+					                </form>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+	</body>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script>
+	    $('#slice').on('show.bs.modal', function (event) {
+	        var button = $(event.relatedTarget) // 触发事件的按钮
+	        var recipient = button.data('whatever') // 解析出data-whatever内容
+	        var modal = $(this)
+	    })
+			$('#msfqs').on('show.bs.modal', function (event) {
+			    var button = $(event.relatedTarget) // 触发事件的按钮
+			    var recipient = button.data('whatever') // 解析出data-whatever内容
+			    var modal = $(this)
+			})
+
+           function ddww(ww){
+             $.post("/realaseMemoryByPname",{"pname":ww},function(data) {
+	    });
+	      }
+	        $("#submit").click(function () {
+        var  ddd  =$("#tnumber").val();
+          var memoryName=$('#select').val();
+           $.post("/creatThread",{"tnumber":ddd,"memoryName":memoryName},function (data) {
+           });
+       });
+	       $("#newthread").click(function () {
+        var  priorityVal=   $("#priorityVal").val();
+        var  needVal=   $("#needVal").val();
+        var  arriveVal=   $("#arriveVal").val();
+       var pmemorysize = $("#pmemorysize").val();
+        var memoryName=$('#select2').val();
+        alert(memoryName)
+            console.log(ddd)
+               $.post("/addThread",{"priority":priorityVal,"needtime":needVal,"arriveTime":arriveVal,"size":pmemorysize,"memoryName":memoryName},function (data) {
+               });
+           });
+	</script>
+		<script>
+               function  ddd() {
+                               $("#readyBox  tr:not(:first)").html("");
+                                $.ajaxSettings.async = false;
+                             $.post("/checkAllThread",{},function (data) {
+                                 if (data.flag){
+
+                                       $("#dddd  tr:not(:first)").html("");
+                                  var ddddhtml= '';
+                                   $.each(data.sparezones, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                 ddddhtml += '<tr>' +
+                                     '<td>' + data.sparezones[k].size + '</td>'
+                                     +'<td>' + data.sparezones[k].head + '</td>'
+                                     +'<td>' + data.sparezones[k].free + '</td>'+
+                                     '</tr>'
+                                     });
+                                    $("#dddd").append(ddddhtml);
+                                    $("#ddd tr:not(:first)").html("");
+                                     var dddhtml= '';
+                                     $.each(data.allocatedzones, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                     dddhtml += '<tr>' +
+                                         '<td>' + data.allocatedzones[k].name + '</td>'
+                                         +'<td>' + data.allocatedzones[k].size + '</td>'
+                                         +'<td>' + data.allocatedzones[k].head + '</td>'
+                                          +'<td>' + data.allocatedzones[k].free + '</td>'+
+                                         '</tr>'
+                                         });
+                                     $("#ddd").append(dddhtml);
+                                       $("#noAllocation  tr:not(:first)").html("");
+                                       var noAllocationhtml='';
+                                         $.each(data.noAllocation, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                            noAllocationhtml += '<tr>' +
+                                            '<td>' + data.noAllocation[k].pid + '</td>'
+                                           +'<td>' + data.noAllocation[k].name + '</td>'
+                                           +'<td>' + data.noAllocation[k].priority + '</td>'
+                                           +'<td>' + data.noAllocation[k].needtime + '</td>'
+                                           +'<td>' + data.noAllocation[k].arriveTime + '</td>'
+                                           +'<td>' + data.noAllocation[k].alreadyCpuTime + '</td>'
+                                           +'<td>' + data.noAllocation[k].process_state + '</td>'
+                                           +'<td>' + data.noAllocation[k].responseRatio + '</td>'
+                                              +'<td>' + data.noAllocation[k].startAddress + '</td>'
+                                            +'<td>' + data.noAllocation[k].memorySize + '</td>'+
+                                           '</tr>'
+                                                });
+                                            $("#noAllocation").append(noAllocationhtml);
+                                            $("#ddww").html("");
+                                   var progressdddhtml='';
+                                 $.each(data.processBar, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                 if (data.processBar==[]){
+                                       progressdddhtml +=
+                          '<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: 100%;">'
+                            +'<span>'+100%+'</span>'+'</div>'
+                                 }else  if (data.processBar[k].free){
+                                   progressdddhtml +=
+                                     '<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: '+data.processBar[k].progressNumber+'%;">'
+                                       +'<span>'+data.processBar[k].progressNumber+'%'+'</span>'+'</div>'
+                                 }else if(data.processBar[k].free==false){
+                                   progressdddhtml +=
+                               '<div class="progress-bar progress-bar-black" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: '+data.processBar[k].progressNumber+'%;">'
+                                 +'<span>'+data.processBar[k].progressNumber+'%'+'</span>'+'</div>'
+                                 }
+                              });
+                                  $("#ddww").append(progressdddhtml);
+                                     var readyBoxhtml = '';
+                                     $.each(data.readBox, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                         readyBoxhtml += '<tr>' +
+                                             '<td>' + data.readBox[k].pid + '</td>'
+                                             +'<td>' + data.readBox[k].name + '</td>'
+                                             +'<td>' + data.readBox[k].priority + '</td>'
+                                             +'<td>' + data.readBox[k].needtime + '</td>'
+                                             +'<td>' + data.readBox[k].arriveTime + '</td>'
+                                             +'<td>' + data.readBox[k].alreadyCpuTime + '</td>'
+                                             +'<td>' + data.readBox[k].process_state + '</td>'
+                                             +'<td>' + data.readBox[k].responseRatio + '</td>'
+                                                +'<td>' + data.readBox[k].startAddress + '</td>'
+                                              +'<td>' + data.readBox[k].memorySize + '</td>'
+                                               +'<td>' +'<a href="#" onclick=ddww("'+data.readBox[k].name+'")>'+"释放内存"+'</a>' + '</td>'+
+
+                                             '</tr>'
+                                     });
+                                     $("#readyBox").append(readyBoxhtml);
+                                      $("#cpuBox  tr:not(:first)").html("");
+                                       var cpuBoxhtml = '';
+                                     $.each(data.cpuBox, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                         cpuBoxhtml += '<tr>' +
+                                             '<td>' + data.cpuBox[k].pid + '</td>'
+                                             +'<td>' + data.cpuBox[k].name + '</td>'
+                                             +'<td>' + data.cpuBox[k].priority + '</td>'
+                                             +'<td>' + data.cpuBox[k].needtime + '</td>'
+                                             +'<td>' + data.cpuBox[k].arriveTime + '</td>'
+                                             +'<td>' + data.cpuBox[k].alreadyCpuTime + '</td>'
+                                             +'<td>' + data.cpuBox[k].process_state + '</td>'
+                                             +'<td>' + data.cpuBox[k].responseRatio + '</td>'
+                                              +'<td>' + data.cpuBox[k].startAddress + '</td>'
+                                              +'<td>' + data.cpuBox[k].memorySize + '</td>'+
+                                             '</tr>'
+                                     });
+                                     $("#cpuBox").append(cpuBoxhtml);
+                                      $("#blockBox  tr:not(:first)").html("");
+                                         var blockhtml = '';
+                                     $.each(data.blockedBox, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                         blockhtml += '<tr>' +
+                                             '<td>' + data.blockedBox[k].pid + '</td>'
+                                             +'<td>' + data.blockedBox[k].name + '</td>'
+                                             +'<td>' + data.blockedBox[k].priority + '</td>'
+                                             +'<td>' + data.blockedBox[k].needtime + '</td>'
+                                             +'<td>' + data.blockedBox[k].arriveTime + '</td>'
+                                             +'<td>' + data.blockedBox[k].alreadyCpuTime + '</td>'
+                                             +'<td>' + data.blockedBox[k].process_state + '</td>'
+                                             +'<td>' + data.blockedBox[k].responseRatio + '</td>'
+                                               +'<td>' + data.blockedBox[k].startAddress + '</td>'
+                                              +'<td>' + data.blockedBox[k].memorySize + '</td>'+
+                                             '</tr>'
+                                     });
+                                     $("#blockBox").append(blockhtml);
+                                     $("#processSum  tr:not(:first)").html("");
+                                       var processSumhtml = '';
+                                      $.each(data.processSum, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                        processSumhtml += '<tr>' +
+                                        '<td>' + data.processSum[k].pid + '</td>'
+                                         +'<td>' + data.processSum[k].name + '</td>'
+                                         +'<td>' + data.processSum[k].priority + '</td>'
+                                         +'<td>' + data.processSum[k].needtime + '</td>'
+                                         +'<td>' + data.processSum[k].arriveTime + '</td>'
+                                         +'<td>' + data.processSum[k].alreadyCpuTime + '</td>'
+                                         +'<td>' + data.processSum[k].process_state + '</td>'
+                                         +'<td>' + data.processSum[k].responseRatio + '</td>'
+                                           +'<td>' + data.processSum[k].startAddress + '</td>'
+                                      +'<td>' + data.processSum[k].memorySize + '</td>'+
+                                          '</tr>'
+                                         });
+                                      $("#processSum").append(processSumhtml);
+                                       $("#firstQueue  tr:not(:first)").html("");
+                                        var firstQueuehtml='';
+                                       $.each(data.firstQueue, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                       firstQueuehtml += '<tr>' +
+                                           '<td>' + data.firstQueue[k].pid + '</td>'
+                                           +'<td>' + data.firstQueue[k].name + '</td>'
+                                           +'<td>' + data.firstQueue[k].priority + '</td>'
+                                           +'<td>' + data.firstQueue[k].needtime + '</td>'
+                                           +'<td>' + data.firstQueue[k].arriveTime + '</td>'
+                                           +'<td>' + data.firstQueue[k].alreadyCpuTime + '</td>'
+                                           +'<td>' + data.firstQueue[k].process_state + '</td>'
+                                           +'<td>' + data.firstQueue[k].responseRatio + '</td>'
+                                            +'<td>' + data.firstQueue[k].startAddress + '</td>'
+                                             +'<td>' + data.firstQueue[k].memorySize + '</td>'+
+                                           '</tr>'
+                                   });
+                                   $("#firstQueue").append(firstQueuehtml);
+                                      $("#secondQueue  tr:not(:first)").html("");
+                                          var secondQueuehtml= '';
+                                   $.each(data.secondQueue, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                              secondQueuehtml += '<tr>' +
+                                  '<td>' + data.secondQueue[k].pid + '</td>'
+                                  +'<td>' + data.secondQueue[k].name + '</td>'
+                                  +'<td>' + data.secondQueue[k].priority + '</td>'
+                                  +'<td>' + data.secondQueue[k].needtime + '</td>'
+                                  +'<td>' + data.secondQueue[k].arriveTime + '</td>'
+                                  +'<td>' + data.secondQueue[k].alreadyCpuTime + '</td>'
+                                  +'<td>' + data.secondQueue[k].process_state + '</td>'
+                                  +'<td>' + data.secondQueue[k].responseRatio + '</td>'
+                                    +'<td>' + data.secondQueue[k].startAddress + '</td>'
+                               +'<td>' + data.secondQueue[k].memorySize + '</td>'+
+                                  '</tr>'
+                          });
+                          $("#secondQueue").append(secondQueuehtml);
+                             $("#thirdQueue  tr:not(:first)").html("");
+                                var thirdQueuehtml= '';
+                              $.each(data.thirdQueue, function (k, v) {  // 这里的函数参数是键值对的形式，k代表键名，v代表值
+                                thirdQueuehtml += '<tr>' +
+                                    '<td>' + data.thirdQueue[k].pid + '</td>'
+                                    +'<td>' + data.thirdQueue[k].name + '</td>'
+                                    +'<td>' + data.thirdQueue[k].priority + '</td>'
+                                    +'<td>' + data.thirdQueue[k].needtime + '</td>'
+                                    +'<td>' + data.thirdQueue[k].arriveTime + '</td>'
+                                    +'<td>' + data.thirdQueue[k].alreadyCpuTime + '</td>'
+                                    +'<td>' + data.thirdQueue[k].process_state + '</td>'
+                                    +'<td>' + data.thirdQueue[k].responseRatio + '</td>'
+                                   +'<td>' + data.thirdQueue[k].startAddress + '</td>'
+                                     +'<td>' + data.thirdQueue[k].memorySize + '</td>'+
+                                    '</tr>'
+                            });
+                            $("#thirdQueue").append(thirdQueuehtml);
+
+                                 } else{
+                                     console.log("sb")
+                                 }
+                             });
+    $.ajaxSettings.async = true;
+    };
+
+     setInterval(ddd,1000);
+
+
+  $("#priority").click(function () {
+                        $.ajaxSettings.async = false;
+                      $.post("/dispatch",{"name":"priority"},function (data) {
+                      });
+                      $.ajaxSettings.async = true;
+                    });
+                  function fCFS(){
+                            $.ajaxSettings.async = false;
+                          $.post("/dispatch",{"name":"fCFS"},function (data) {
+                          });
+                          $.ajaxSettings.async = true;
+             };
+                         $("#slice_submit").click(function () {
+                             $.ajaxSettings.async = false;
+                         var  slice_time=   $("#slice_time").val();
+                           $.post("/dispatch",{"name":"RR","tnumber":slice_time},function (data) {
+                           });
+                           $.ajaxSettings.async = true;
+                         });
+                          $("#hRRN").click(function () {
+                              $.ajaxSettings.async = false;
+                            $.post("/dispatch",{"name":"hRRN"},function (data) {
+                            });
+                            $.ajaxSettings.async = true;
+                          });
+                                 $("#msfqs_submit").click(function () {
+                                     $.ajaxSettings.async = false;
+                                   var slice_time01=  $("#slice_time01").val();
+                                    var slice_time02=  $("#slice_time02").val();
+                                     var slice_time03=  $("#slice_time03").val();
+                                     console.log(slice_time01,slice_time02,slice_time03)
+                                   $.post("/dispatch",{"name":"MSFQS","tfirst":slice_time01,"ttwo":slice_time02,"tthird":slice_time03},function (data) {
+                                   });
+                                   $.ajaxSettings.async = true;
+                                 });
+
+                function clean() {
+                     $.ajaxSettings.async = false;
+                     $.post("/clean",{},function (data) {
+                    });
+                $.ajaxSettings.async = true;
+                }
+                  function  blockd(){
+                        $.post("/requestIoEvent",{},function (data) {
+                        });
+                        };
+                                     function  wake(){
+                                   $.post("/finishIoEvent",{},function (data) {
+                                   });
+                                     };
+
+
+</script>
+</html>
